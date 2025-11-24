@@ -1,2 +1,2 @@
-# Academic-Homepage
-This would be Ying Zhang's Homepage 
+# Yingurt.github_personal.io
+This is Yingurt's personal website.
