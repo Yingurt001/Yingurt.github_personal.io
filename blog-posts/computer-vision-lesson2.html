@@ -40,10 +40,10 @@
             
             <article>
                 <div class="blog-post-header">
-                    <h1 class="blog-post-title">Computer Vision Lesson 2: Convolutional Neural Networks Fundamentals</h1>
+                    <h1 class="blog-post-title">Computer Vision Lesson 2: Understanding the Convolutional Base</h1>
                     <div class="blog-post-meta">
-                        <span>📅 January 22, 2025</span>
-                        <span>🏷️ Computer Vision, CNN, Convolution, TensorFlow, Deep Learning</span>
+                        <span>📅 November 24, 2025</span>
+                        <span>🏷️ Computer Vision, CNN, Convolution, ReLU, TensorFlow, Deep Learning</span>
                     </div>
                     <div style="margin-top: 1rem;">
                         <a href="https://github.com/Yingurt001/Computer-Vision" target="_blank" style="color: #3b82f6; text-decoration: none; font-weight: 500;">
@@ -53,107 +53,226 @@
                 </div>
 
                 <div class="blog-post-content">
-                    <h2>Learning Topics</h2>
-                    
-                    <h3>1. Understanding Convolution Operation</h3>
-                    <ul>
-                        <li>Mathematical definition and principles of convolution</li>
-                        <li>Concept and role of kernel (filter)</li>
-                        <li>Kernel sliding across image to compute weighted sums</li>
-                        <li><strong>1 kernel → 1 feature map, 64 kernels → 64 feature maps</strong></li>
-                        <li>Kernel size (typically odd sizes like 3×3 or 5×5)</li>
-                    </ul>
-
-                    <h3>2. Defining Convolution in TensorFlow</h3>
-                    <ul>
-                        <li>Using <code>layers.Conv2D</code></li>
-                        <li>Meaning of <code>filters</code> parameter (how many kernels to learn)</li>
-                        <li>Role of <code>kernel_size</code> parameter</li>
-                        <li>Difference between Keras layers and TensorFlow low-level operations</li>
-                        <li>Using <code>tf.nn.conv2d</code></li>
-                    </ul>
-
-                    <h3>3. Understanding Feature Maps (Activation Maps)</h3>
-                    <ul>
-                        <li>Feature map generation process</li>
-                        <li>Each scan position outputs one number</li>
-                        <li>All output values form a feature map</li>
-                        <li>Feature maps show where features appear</li>
-                        <li>Activation values before and after activation function</li>
-                    </ul>
-
-                    <h3>4. Role of ReLU Activation Function</h3>
-                    <p>ReLU is defined as:</p>
-                    <div style="text-align: center; margin: 1.5rem 0;">
-                        $$\text{ReLU}(x) = \max(0, x)$$
-                    </div>
-                    <ul>
-                        <li>ReLU acts as a feature detector</li>
-                        <li>Keeps positive responses (feature found)</li>
-                        <li>Suppresses negative values (feature not found)</li>
-                        <li>Importance of ReLU in feature detection</li>
-                    </ul>
-
-                    <h3>5. Basic Structure of Convolutional Neural Networks</h3>
-                    <ul>
-                        <li><strong>Conv2D layer</strong> (feature extraction)</li>
-                        <li><strong>ReLU activation</strong> (feature detection)</li>
-                        <li><strong>Max Pooling layer</strong> (feature compression)</li>
-                        <li>These three steps constitute the feature extraction pipeline</li>
-                    </ul>
-
-                    <h3>6. Feature Extraction Workflow</h3>
-                    <p>The complete feature extraction process consists of three steps:</p>
+                    <h2>Introduction</h2>
+                    <p>
+                        In Lesson 1, we learned that our convolutional classifier has two parts:
+                    </p>
                     <ol>
-                        <li><strong>Filter</strong>: Kernel scans the image, computes weighted sums</li>
-                        <li><strong>Detect</strong>: ReLU keeps positive evidence of features</li>
-                        <li><strong>Condense</strong>: Max Pooling reduces spatial size and enhances strong features</li>
+                        <li><strong>A convolutional base</strong> - extracts visual features from an image</li>
+                        <li><strong>A head of dense layers</strong> - uses those features to classify the image</li>
+                    </ol>
+                    <p>
+                        In this lesson, we focus on understanding what the convolutional base is doing during CNN. We don't need to go into details about both parts, but we will try our best to understand the convolutional base.
+                    </p>
+
+                    <h2>What Do We Learn in This Lesson?</h2>
+                    <p>
+                        We only learn one thing:
+                    </p>
+                    <ul>
+                        <li><strong>Convolutional layer with ReLU activation</strong></li>
+                    </ul>
+                    <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1rem; margin: 1.5rem 0; border-radius: 4px;">
+                        <p style="margin: 0;"><strong>⚠️ Important Note:</strong> A convolutional layer is <em>not</em> equivalent to a filter. Our filter often does not include activation, but is just a kernel scanning that outputs the value for each grid cell.</p>
+                    </div>
+
+                    <h2>Feature Extraction</h2>
+                    <p>
+                        We first need to discuss the purpose of these layers in the network. Feature extraction consists of three basic operations:
+                    </p>
+                    <ol>
+                        <li><strong>Filter</strong> an image for a particular feature (convolution)</li>
+                        <li><strong>Detect</strong> that feature within the filtered image (ReLU)</li>
+                        <li><strong>Condense</strong> the image to enhance the features (maximum pooling)</li>
                     </ol>
 
-                    <h3>7. Manually Defining Convolution Kernels</h3>
+                    <p>
+                        Below is the figure for the Feature extraction of 4 stages: Input, Filter, Detect, and Condense.
+                    </p>
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../blog-images/Feature_extraction.png" alt="Feature Extraction Process" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    </div>
+
+                    <h2>First Layer: Filter with Convolution</h2>
+                    <p>
+                        A convolutional layer carries out the filtering step.
+                    </p>
+
+                    <h3>Weights and Kernels</h3>
+                    <p>
+                        The first figure shows what we call <strong>weights</strong>, which is what the convnet learns during training. These are primarily contained in its convolutional layers. These weights we call <strong>kernels</strong>. We can represent them as small arrays.
+                    </p>
+                    <p>
+                        This figure shows a <strong>3×3 convolution kernel</strong> (filter). The weight values are:
+                    </p>
+                    <pre style="background-color: #1f2937; color: #f9fafb; padding: 1rem; border-radius: 6px; overflow-x: auto;"><code>[-1   2   -1]
+[-1   2   -1]
+[-1   2   -1]</code></pre>
+
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../blog-images/weights.png" alt="Convolution Kernel Weights" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    </div>
+
+                    <h3>The Convolution Operation</h3>
+                    <p>
+                        The convolution operation does:
+                    </p>
+                    <div style="text-align: center; margin: 1.5rem 0;">
+                        <code style="background-color: #f3f4f6; padding: 0.5rem 1rem; border-radius: 4px; font-size: 1.1rem;">output = sum(kernel[i,j] * input_patch[i,j])</code>
+                    </div>
+
+                    <p>
+                        Figure 2 shows <strong>The Convolution Extraction Process</strong>. The kernel slides across the image.
+                    </p>
+
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../blog-images/kernel.png" alt="Convolution Extraction Process" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    </div>
+
+                    <h3>Understanding the Process</h3>
                     <ul>
-                        <li>Creating custom kernels using <code>tf.constant</code></li>
-                        <li>Understanding how sum of kernel values affects output brightness</li>
-                        <li>Different types of kernels (edge detection, blur, sharpen)</li>
-                        <li>How kernels modify images</li>
+                        <li><strong>Weights plot</strong> shows <em>what</em> the kernel looks like (the weights).</li>
+                        <li><strong>Convolution Extraction Process</strong> shows <em>how</em> that kernel is used to create a feature map.</li>
                     </ul>
 
-                    <h3>8. Running Kaggle Code Locally</h3>
+                    <p>
+                        So together they illustrate:
+                    </p>
+                    <ol>
+                        <li>A convolution kernel is a small grid of weights</li>
+                        <li>It scans across the image</li>
+                        <li>At each location it produces a single output value</li>
+                        <li>These values assemble into a feature map</li>
+                        <li>The feature map highlights the features the kernel is designed to detect (e.g., vertical edges)</li>
+                    </ol>
+
+                    <p>
+                        A kernel operates by scanning over an image and producing a weighted sum of pixel values. In this way, a kernel will act sort of like a polarized lens, emphasizing or deemphasizing certain patterns of information.
+                    </p>
+
+                    <h3>Implementing Convolution in TensorFlow</h3>
+                    <pre style="background-color: #1f2937; color: #f9fafb; padding: 1rem; border-radius: 6px; overflow-x: auto;"><code>from tensorflow import keras
+from tensorflow.keras import layers
+
+model = keras.Sequential([
+    layers.Conv2D(filters=64, kernel_size=3), # activation is None
+    # More layers follow
+])
+
+'''
+keras.Sequential means that I am building a model by stacking layers one after another
+
+layers gives me the access to Keras layer types (Conv2D)
+
+Conv2D is a 2D convolution layer used for images
+'''</code></pre>
+
+                    <h3>Understanding the Parameters</h3>
+                    <p>
+                        <strong>Filter = 64</strong> means that the layer will learn 64 different feature maps.
+                    </p>
+                    <p>
+                        If I set <code>filters=64</code>, then:
+                    </p>
                     <ul>
-                        <li>Identifying Kaggle-specific modules (<code>learntools.core</code>, <code>learntools.computer_vision</code>)</li>
-                        <li>Removing non-existent imports</li>
-                        <li>Writing your own helper functions</li>
-                        <li>Using your own kernels for visualization</li>
+                        <li>I have 64 different kernels</li>
+                        <li>Each kernel learns a different pattern</li>
+                        <li>Each kernel shares weights across space</li>
                     </ul>
 
-                    <h3>9. Complete Feature Extraction Pipeline Implementation</h3>
+                    <p>
+                        Because some features like edges, textures, or corners can appear anywhere in the image, they should be detected in the same way like other pixels.
+                    </p>
+
+                    <p>
+                        Normally we would set the size of the kernel to be odd like <code>kernel_size=(3, 3)</code> or <code>(5, 5)</code> so that a single pixel sits at the center.
+                    </p>
+
+                    <h3>More Fun Facts About Kernel</h3>
+                    <p>
+                        Each output neuron is related to nine neurons in the input. By setting the dimensions of the kernels with <code>kernel_size</code>, we will be able to tell the convnet how to form the connections.
+                    </p>
+
+                    <h2>Second Layer: Activations</h2>
+                    <p>
+                        After the convolution layer produces its feature maps, the activation layer (like ReLU) applies a nonlinear function to those maps.
+                    </p>
+
+                    <h3>Why Do We Need Activation?</h3>
+                    <p>
+                        Because without activation, a CNN would be only linear operations, meaning it cannot learn complex patterns. Activation makes the network capable of learning nonlinear features, such as shapes, textures, and objects.
+                    </p>
+
+                    <h3>What the Activation Does</h3>
                     <ul>
-                        <li>Loading images</li>
-                        <li>Defining convolution kernels</li>
-                        <li>Applying convolution (<code>tf.nn.conv2d</code>)</li>
-                        <li>Applying ReLU (<code>tf.nn.relu</code>)</li>
-                        <li>Visualizing feature maps</li>
+                        <li>Keeps positive values (ReLU: max(0, x))</li>
+                        <li>Suppresses irrelevant negative activations</li>
+                        <li><strong>Adds nonlinearity</strong></li>
                     </ul>
 
-                    <h2>Core Summary</h2>
+                    <h3>How They Work Together</h3>
+                    <p>
+                        <strong>Convolution layer produces:</strong>
+                    </p>
+                    <ul>
+                        <li>Raw feature maps (linear responses)</li>
+                    </ul>
+                    <p>
+                        <strong>Activation layer produces:</strong>
+                    </p>
+                    <ul>
+                        <li>Activated feature maps</li>
+                    </ul>
+
+                    <h3>ReLU Activation</h3>
+                    <p>
+                        Below is a figure of ReLU activation:
+                    </p>
+
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../blog-images/ReLU.png" alt="ReLU Activation Function" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    </div>
+
+                    <p>
+                        This means:
+                    </p>
+                    <ul>
+                        <li>If <strong>x < 0</strong>, the output is <strong>0</strong></li>
+                        <li>If <strong>x ≥ 0</strong>, the output is <strong>x</strong></li>
+                    </ul>
+
+                    <p>
+                        We would also call the rectifier function the <strong>ReLU activation</strong> or even the <strong>ReLU function</strong>. It can be defined in its own Activation layer, but most often we would also include it as the activation function of Conv2D.
+                    </p>
+
+                    <p>
+                        After a convolution produces a feature map (linear output), ReLU is applied:
+                    </p>
+                    <div style="text-align: center; margin: 1.5rem 0; padding: 1rem; background-color: #f0f9ff; border-radius: 6px;">
+                        <code style="font-size: 1.1rem;">Convolution → Feature Map → ReLU → Activated Feature Map</code>
+                    </div>
+
+                    <h3>Why Is This Important?</h3>
+                    <p>
+                        We could think about the activation function as scoring pixel values according to some measure of importance. Every unimportant value is equally unimportant.
+                    </p>
+
+                    <h2>Summary</h2>
                     <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1rem; margin: 1.5rem 0; border-radius: 4px;">
                         <p style="margin: 0; font-size: 1.1rem; font-weight: 600;">
-                            <strong>⭐ One-Sentence Summary:</strong> <em>Convolution extracts features, and ReLU detects those features.</em>
-                        </p>
-                        <p style="margin: 0.5rem 0 0 0;">
-                            I learned this visually, mathematically, and with real TensorFlow code.
+                            <strong>⭐ Key Takeaway:</strong> The convolutional base performs feature extraction through three steps: <strong>Filter</strong> (convolution), <strong>Detect</strong> (ReLU activation), and <strong>Condense</strong> (max pooling). Understanding how convolution kernels scan images and how ReLU activation adds nonlinearity is crucial for building effective CNNs.
                         </p>
                     </div>
 
                     <h2>Learning Outcomes</h2>
                     <p>Through this lesson, I have mastered:</p>
                     <ul>
-                        <li>✅ Mathematical principles and implementation of convolution operation</li>
-                        <li>✅ Concepts of feature maps and activation maps</li>
-                        <li>✅ Role of ReLU activation function in feature detection</li>
-                        <li>✅ Complete CNN feature extraction workflow (Filter → Detect → Condense)</li>
-                        <li>✅ How to manually define and use convolution kernels</li>
-                        <li>✅ How to implement CNN feature extraction in local environment</li>
+                        <li>✅ Understanding the structure of convolutional classifiers (base + head)</li>
+                        <li>✅ How convolutional layers perform filtering through kernel scanning</li>
+                        <li>✅ The relationship between kernels, weights, and feature maps</li>
+                        <li>✅ How to use Conv2D layers in TensorFlow/Keras</li>
+                        <li>✅ The importance of ReLU activation for adding nonlinearity</li>
+                        <li>✅ How convolution and activation work together in feature extraction</li>
                     </ul>
 
                     <h2>Related Files</h2>
@@ -167,7 +286,7 @@
                     </ul>
 
                     <blockquote style="background-color: #f0f9ff; border-left: 4px solid #0ea5e9; padding: 1rem; margin: 1.5rem 0; border-radius: 4px;">
-                        <strong>💡 Key Insight:</strong> Understanding convolution at a fundamental level is crucial for building effective CNNs. The three-step process of Filter → Detect → Condense forms the backbone of all convolutional neural network architectures, from simple models to complex deep networks.
+                        <strong>💡 Key Insight:</strong> The convolutional base is the feature extraction engine of CNNs. By understanding how kernels scan images and how ReLU activation introduces nonlinearity, we can better design and optimize convolutional neural networks for various computer vision tasks.
                     </blockquote>
 
                     <div style="margin-top: 2rem; padding: 1rem; background-color: #f9fafb; border-radius: 6px;">
@@ -189,4 +308,3 @@
     </footer>
 </body>
 </html>
-
