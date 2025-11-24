@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Vision Lesson 1: Image Classification with Transfer Learning - Ying Zhang</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-links">
+                <a href="../index.html">
+                    <svg fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+                    Home
+                </a>
+                <a href="../blog.html">
+                    <svg fill="currentColor" viewBox="0 0 20 20"><path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path><path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path></svg>
+                    Blog
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container blog-full-width">
+        <main class="content blog-post">
+            <a href="../blog.html" class="back-to-blog">← Back to Blog</a>
+            
+            <article>
+                <div class="blog-post-header">
+                    <h1 class="blog-post-title">Computer Vision Lesson 1: Image Classification with Transfer Learning</h1>
+                    <div class="blog-post-meta">
+                        <span>📅 January 22, 2025</span>
+                        <span>🏷️ Computer Vision, Deep Learning, Transfer Learning, VGG16, TensorFlow</span>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <a href="https://github.com/Yingurt001/Computer-Vision" target="_blank" style="color: #3b82f6; text-decoration: none; font-weight: 500;">
+                            🔗 View Repository on GitHub →
+                        </a>
+                    </div>
+                </div>
+
+                <div class="blog-post-content">
+                    <h2>Learning Topics</h2>
+                    
+                    <h3>1. Data Loading and Preprocessing</h3>
+                    <ul>
+                        <li>Using <code>image_dataset_from_directory</code> to load image datasets</li>
+                        <li>Image size standardization (128×128)</li>
+                        <li>Data type conversion (to float32)</li>
+                        <li>Data caching and prefetching optimization (using AUTOTUNE)</li>
+                    </ul>
+
+                    <h3>2. Using VGG16 Pre-trained Model</h3>
+                    <ul>
+                        <li>Importing VGG16 pre-trained model</li>
+                        <li>Understanding the role of <code>include_top=False</code></li>
+                        <li>Setting <code>input_shape=(128, 128, 3)</code></li>
+                        <li>Freezing pre-trained layers (<code>trainable = False</code>)</li>
+                    </ul>
+
+                    <h3>3. Transfer Learning Practice</h3>
+                    <ul>
+                        <li>Building transfer learning model architecture</li>
+                        <li>Adding custom layers on top of pre-trained base</li>
+                        <li>Using Flatten layer to flatten features</li>
+                        <li>Adding fully connected layers for classification</li>
+                    </ul>
+
+                    <h3>4. Model Training and Evaluation</h3>
+                    <ul>
+                        <li>Model compilation (using Adam optimizer and binary_crossentropy loss function)</li>
+                        <li>Training process monitoring (30 epochs)</li>
+                        <li>Validation set evaluation</li>
+                        <li>Training history visualization</li>
+                    </ul>
+
+                    <h3>5. Model Architecture Design</h3>
+                    <ul>
+                        <li>Sequential model construction</li>
+                        <li>Importance of layer stacking order</li>
+                        <li>Activation function selection (ReLU and Sigmoid)</li>
+                        <li>Output layer design (binary classification problem)</li>
+                    </ul>
+
+                    <h3>6. Performance Optimization Techniques</h3>
+                    <ul>
+                        <li>Data pipeline optimization (cache and prefetch)</li>
+                        <li>Batch size setting (batch_size=64)</li>
+                        <li>Random seed setting for reproducibility</li>
+                        <li>Training and validation data separation</li>
+                    </ul>
+
+                    <h2>Learning Outcomes</h2>
+                    <p>Through this lesson, I have mastered:</p>
+                    <ul>
+                        <li>✅ How to use TensorFlow/Keras to load image datasets</li>
+                        <li>✅ How to leverage pre-trained VGG16 model for transfer learning</li>
+                        <li>✅ How to build and train an image classification model</li>
+                        <li>✅ How to evaluate model performance and visualize training process</li>
+                    </ul>
+
+                    <h2>Related Files</h2>
+                    <p>
+                        The complete code implementation can be found in the repository:
+                    </p>
+                    <ul>
+                        <li><a href="https://github.com/Yingurt001/Computer-Vision/blob/main/Lecture_1.ipynb" target="_blank">Lecture_1.ipynb</a> - Complete code implementation</li>
+                        <li><a href="https://github.com/Yingurt001/Computer-Vision/blob/main/Lesson_1.md" target="_blank">Lesson_1.md</a> - Lesson notes</li>
+                    </ul>
+
+                    <blockquote style="background-color: #f0f9ff; border-left: 4px solid #0ea5e9; padding: 1rem; margin: 1.5rem 0; border-radius: 4px;">
+                        <strong>💡 Key Takeaway:</strong> Transfer learning allows us to leverage pre-trained models like VGG16 to achieve good performance on new tasks with limited data and computational resources. By freezing the pre-trained layers and only training the top layers, we can quickly adapt the model to our specific classification problem.
+                    </blockquote>
+
+                    <div style="margin-top: 2rem; padding: 1rem; background-color: #f9fafb; border-radius: 6px;">
+                        <p style="margin: 0;"><strong>Repository:</strong> <a href="https://github.com/Yingurt001/Computer-Vision" target="_blank" style="color: #3b82f6;">https://github.com/Yingurt001/Computer-Vision</a></p>
+                    </div>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="https://github.com/Yingurt001" target="_blank" title="GitHub"><img src="https://img.icons8.com/color/24/000000/github.png" alt="GitHub"></a>
+                <a href="https://orcid.org/0009-0000-2900-9197" target="_blank" title="ORCID"><img src="https://upload.wikimedia.org/wikipedia/commons/archive/f/f7/20160723044737%21Orcid_icon.png" alt="ORCID"></a>
+            </div>
+            <div class="footer-copyright">© Ying Zhang</div>
+        </div>
+    </footer>
+</body>
+</html>
+

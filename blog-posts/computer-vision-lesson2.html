@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Vision Lesson 2: CNN Fundamentals - Ying Zhang</title>
+    <link rel="stylesheet" href="../styles.css">
+    <!-- MathJax for rendering mathematical equations -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-links">
+                <a href="../index.html">
+                    <svg fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+                    Home
+                </a>
+                <a href="../blog.html">
+                    <svg fill="currentColor" viewBox="0 0 20 20"><path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path><path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path></svg>
+                    Blog
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container blog-full-width">
+        <main class="content blog-post">
+            <a href="../blog.html" class="back-to-blog">← Back to Blog</a>
+            
+            <article>
+                <div class="blog-post-header">
+                    <h1 class="blog-post-title">Computer Vision Lesson 2: Convolutional Neural Networks Fundamentals</h1>
+                    <div class="blog-post-meta">
+                        <span>📅 January 22, 2025</span>
+                        <span>🏷️ Computer Vision, CNN, Convolution, TensorFlow, Deep Learning</span>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <a href="https://github.com/Yingurt001/Computer-Vision" target="_blank" style="color: #3b82f6; text-decoration: none; font-weight: 500;">
+                            🔗 View Repository on GitHub →
+                        </a>
+                    </div>
+                </div>
+
+                <div class="blog-post-content">
+                    <h2>Learning Topics</h2>
+                    
+                    <h3>1. Understanding Convolution Operation</h3>
+                    <ul>
+                        <li>Mathematical definition and principles of convolution</li>
+                        <li>Concept and role of kernel (filter)</li>
+                        <li>Kernel sliding across image to compute weighted sums</li>
+                        <li><strong>1 kernel → 1 feature map, 64 kernels → 64 feature maps</strong></li>
+                        <li>Kernel size (typically odd sizes like 3×3 or 5×5)</li>
+                    </ul>
+
+                    <h3>2. Defining Convolution in TensorFlow</h3>
+                    <ul>
+                        <li>Using <code>layers.Conv2D</code></li>
+                        <li>Meaning of <code>filters</code> parameter (how many kernels to learn)</li>
+                        <li>Role of <code>kernel_size</code> parameter</li>
+                        <li>Difference between Keras layers and TensorFlow low-level operations</li>
+                        <li>Using <code>tf.nn.conv2d</code></li>
+                    </ul>
+
+                    <h3>3. Understanding Feature Maps (Activation Maps)</h3>
+                    <ul>
+                        <li>Feature map generation process</li>
+                        <li>Each scan position outputs one number</li>
+                        <li>All output values form a feature map</li>
+                        <li>Feature maps show where features appear</li>
+                        <li>Activation values before and after activation function</li>
+                    </ul>
+
+                    <h3>4. Role of ReLU Activation Function</h3>
+                    <p>ReLU is defined as:</p>
+                    <div style="text-align: center; margin: 1.5rem 0;">
+                        $$\text{ReLU}(x) = \max(0, x)$$
+                    </div>
+                    <ul>
+                        <li>ReLU acts as a feature detector</li>
+                        <li>Keeps positive responses (feature found)</li>
+                        <li>Suppresses negative values (feature not found)</li>
+                        <li>Importance of ReLU in feature detection</li>
+                    </ul>
+
+                    <h3>5. Basic Structure of Convolutional Neural Networks</h3>
+                    <ul>
+                        <li><strong>Conv2D layer</strong> (feature extraction)</li>
+                        <li><strong>ReLU activation</strong> (feature detection)</li>
+                        <li><strong>Max Pooling layer</strong> (feature compression)</li>
+                        <li>These three steps constitute the feature extraction pipeline</li>
+                    </ul>
+
+                    <h3>6. Feature Extraction Workflow</h3>
+                    <p>The complete feature extraction process consists of three steps:</p>
+                    <ol>
+                        <li><strong>Filter</strong>: Kernel scans the image, computes weighted sums</li>
+                        <li><strong>Detect</strong>: ReLU keeps positive evidence of features</li>
+                        <li><strong>Condense</strong>: Max Pooling reduces spatial size and enhances strong features</li>
+                    </ol>
+
+                    <h3>7. Manually Defining Convolution Kernels</h3>
+                    <ul>
+                        <li>Creating custom kernels using <code>tf.constant</code></li>
+                        <li>Understanding how sum of kernel values affects output brightness</li>
+                        <li>Different types of kernels (edge detection, blur, sharpen)</li>
+                        <li>How kernels modify images</li>
+                    </ul>
+
+                    <h3>8. Running Kaggle Code Locally</h3>
+                    <ul>
+                        <li>Identifying Kaggle-specific modules (<code>learntools.core</code>, <code>learntools.computer_vision</code>)</li>
+                        <li>Removing non-existent imports</li>
+                        <li>Writing your own helper functions</li>
+                        <li>Using your own kernels for visualization</li>
+                    </ul>
+
+                    <h3>9. Complete Feature Extraction Pipeline Implementation</h3>
+                    <ul>
+                        <li>Loading images</li>
+                        <li>Defining convolution kernels</li>
+                        <li>Applying convolution (<code>tf.nn.conv2d</code>)</li>
+                        <li>Applying ReLU (<code>tf.nn.relu</code>)</li>
+                        <li>Visualizing feature maps</li>
+                    </ul>
+
+                    <h2>Core Summary</h2>
+                    <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1rem; margin: 1.5rem 0; border-radius: 4px;">
+                        <p style="margin: 0; font-size: 1.1rem; font-weight: 600;">
+                            <strong>⭐ One-Sentence Summary:</strong> <em>Convolution extracts features, and ReLU detects those features.</em>
+                        </p>
+                        <p style="margin: 0.5rem 0 0 0;">
+                            I learned this visually, mathematically, and with real TensorFlow code.
+                        </p>
+                    </div>
+
+                    <h2>Learning Outcomes</h2>
+                    <p>Through this lesson, I have mastered:</p>
+                    <ul>
+                        <li>✅ Mathematical principles and implementation of convolution operation</li>
+                        <li>✅ Concepts of feature maps and activation maps</li>
+                        <li>✅ Role of ReLU activation function in feature detection</li>
+                        <li>✅ Complete CNN feature extraction workflow (Filter → Detect → Condense)</li>
+                        <li>✅ How to manually define and use convolution kernels</li>
+                        <li>✅ How to implement CNN feature extraction in local environment</li>
+                    </ul>
+
+                    <h2>Related Files</h2>
+                    <p>
+                        The complete code implementation can be found in the repository:
+                    </p>
+                    <ul>
+                        <li><a href="https://github.com/Yingurt001/Computer-Vision/blob/main/lecture2.ipynb" target="_blank">lecture2.ipynb</a> - Complete code implementation</li>
+                        <li><a href="https://github.com/Yingurt001/Computer-Vision/blob/main/Lesson_2.md" target="_blank">Lesson_2.md</a> - Lesson notes</li>
+                        <li><a href="https://github.com/Yingurt001/Computer-Vision/blob/main/CNN_Lesson_2.md" target="_blank">CNN_Lesson_2.md</a> - Detailed lesson summary</li>
+                    </ul>
+
+                    <blockquote style="background-color: #f0f9ff; border-left: 4px solid #0ea5e9; padding: 1rem; margin: 1.5rem 0; border-radius: 4px;">
+                        <strong>💡 Key Insight:</strong> Understanding convolution at a fundamental level is crucial for building effective CNNs. The three-step process of Filter → Detect → Condense forms the backbone of all convolutional neural network architectures, from simple models to complex deep networks.
+                    </blockquote>
+
+                    <div style="margin-top: 2rem; padding: 1rem; background-color: #f9fafb; border-radius: 6px;">
+                        <p style="margin: 0;"><strong>Repository:</strong> <a href="https://github.com/Yingurt001/Computer-Vision" target="_blank" style="color: #3b82f6;">https://github.com/Yingurt001/Computer-Vision</a></p>
+                    </div>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="https://github.com/Yingurt001" target="_blank" title="GitHub"><img src="https://img.icons8.com/color/24/000000/github.png" alt="GitHub"></a>
+                <a href="https://orcid.org/0009-0000-2900-9197" target="_blank" title="ORCID"><img src="https://upload.wikimedia.org/wikipedia/commons/archive/f/f7/20160723044737%21Orcid_icon.png" alt="ORCID"></a>
+            </div>
+            <div class="footer-copyright">© Ying Zhang</div>
+        </div>
+    </footer>
+</body>
+</html>
+

@@ -82,13 +82,29 @@
         <main class="content">
             <h2>Blog</h2>
             
-            <h3 style="font-size: 1.5rem; font-weight: 600; color: #0ea5e9; margin-top: 2rem; margin-bottom: 1rem;">Machine Learning</h3>
-            <p style="margin-bottom: 2rem; color: #666;">
-                Sharing theories, practices, and project experiences related to machine learning and deep learning.
-            </p>
+            <!-- View Toggle Controls -->
+            <div class="blog-controls">
+                <div class="view-toggle">
+                    <button class="view-toggle-btn active" onclick="switchView('card')" id="cardViewBtn">
+                        📋 Card View
+                    </button>
+                    <button class="view-toggle-btn" onclick="switchView('table')" id="tableViewBtn">
+                        📊 Table View
+                    </button>
+                </div>
+            </div>
 
-            <!-- Machine Learning Blog Posts -->
-            <div class="blog-list">
+            <!-- Machine Learning Series -->
+            <div class="blog-section">
+                <div class="blog-section-header" onclick="toggleSection('ml-section')">
+                    <div>
+                        <h3 class="blog-section-title">Machine Learning 自学系列</h3>
+                        <p class="blog-section-description">Sharing theories, practices, and project experiences related to machine learning and deep learning.</p>
+                    </div>
+                    <span class="blog-section-toggle" id="ml-section-toggle">▼</span>
+                </div>
+                <div class="blog-section-content" id="ml-section">
+                    <div class="blog-list" id="ml-blog-list">
                 <article class="blog-item">
                     <div class="blog-date">January 22, 2025</div>
                     <h3 class="blog-title">
@@ -173,14 +189,71 @@
                     </div>
                 </article>
             </div>
+                </div>
+            </div>
 
-            <h3 style="font-size: 1.5rem; font-weight: 600; color: #0ea5e9; margin-top: 3rem; margin-bottom: 1rem;">Microcontrollers</h3>
-            <p style="margin-bottom: 2rem; color: #666;">
-                Here I document my experiences, tutorials, and insights from learning and developing microcontroller projects.
-            </p>
+            <!-- Computer Vision Series -->
+            <div class="blog-section">
+                <div class="blog-section-header" onclick="toggleSection('cv-section')">
+                    <div>
+                        <h3 class="blog-section-title">Computer Vision 系列</h3>
+                        <p class="blog-section-description">Learning notes and projects from my computer vision journey, covering CNN fundamentals, transfer learning, and image classification techniques.</p>
+                        <p style="margin: 0.5rem 0 0 0; font-size: 0.85rem;">
+                            <strong>Repository:</strong> <a href="https://github.com/Yingurt001/Computer-Vision" target="_blank" style="color: #3b82f6;">https://github.com/Yingurt001/Computer-Vision</a>
+                        </p>
+                    </div>
+                    <span class="blog-section-toggle" id="cv-section-toggle">▼</span>
+                </div>
+                <div class="blog-section-content" id="cv-section">
+                    <div class="blog-list" id="cv-blog-list">
+                <article class="blog-item">
+                    <div class="blog-date">January 22, 2025</div>
+                    <h3 class="blog-title">
+                        <a href="blog-posts/computer-vision-lesson2.html">Computer Vision Lesson 2: CNN Fundamentals</a>
+                    </h3>
+                    <p class="blog-excerpt">
+                        Deep dive into convolutional neural networks fundamentals, covering convolution operations, feature maps, ReLU activation, and the complete feature extraction workflow (Filter → Detect → Condense). Learn how to manually define kernels and implement CNN feature extraction.
+                    </p>    
+                    <div class="blog-tags">
+                        <span class="tag">Computer Vision</span>
+                        <span class="tag">CNN</span>
+                        <span class="tag">Convolution</span>
+                        <span class="tag">TensorFlow</span>
+                        <span class="tag">Deep Learning</span>
+                    </div>
+                </article>
+                
+                <article class="blog-item">
+                    <div class="blog-date">January 22, 2025</div>
+                    <h3 class="blog-title">
+                        <a href="blog-posts/computer-vision-lesson1.html">Computer Vision Lesson 1: Image Classification with Transfer Learning</a>
+                    </h3>
+                    <p class="blog-excerpt">
+                        Introduction to image classification using transfer learning with VGG16. Learn data preprocessing, model architecture design, training strategies, and performance optimization techniques for building effective image classification models.
+                    </p>    
+                    <div class="blog-tags">
+                        <span class="tag">Computer Vision</span>
+                        <span class="tag">Transfer Learning</span>
+                        <span class="tag">VGG16</span>
+                        <span class="tag">Image Classification</span>
+                        <span class="tag">TensorFlow</span>
+                    </div>
+                </article>
+                    </div>
+                </div>
+            </div>
 
-            <!-- Blog Post List -->
-            <div class="blog-list">
+            <!-- Microcontrollers Series -->
+            <div class="blog-section">
+                <div class="blog-section-header" onclick="toggleSection('micro-section')">
+                    <div>
+                        <h3 class="blog-section-title">Microcontrollers 系列</h3>
+                        <p class="blog-section-description">Here I document my experiences, tutorials, and insights from learning and developing microcontroller projects.</p>
+                    </div>
+                    <span class="blog-section-toggle" id="micro-section-toggle">▼</span>
+                </div>
+                <div class="blog-section-content" id="micro-section">
+                    <div class="blog-list" id="micro-blog-list">
                 <article class="blog-item">
                     <div class="blog-date">January 15, 2025</div>
                     <h3 class="blog-title">
@@ -225,6 +298,8 @@
                         <span class="tag">IoT</span>
                     </div>
                 </article>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
@@ -251,6 +326,47 @@
                 alert('Email address copied to clipboard');
             });
         }
+
+        // View Toggle Function
+        let currentView = 'card';
+        
+        function switchView(view) {
+            currentView = view;
+            const allBlogLists = document.querySelectorAll('.blog-list');
+            
+            if (view === 'table') {
+                allBlogLists.forEach(list => {
+                    list.classList.add('table-view');
+                });
+                document.getElementById('cardViewBtn').classList.remove('active');
+                document.getElementById('tableViewBtn').classList.add('active');
+            } else {
+                allBlogLists.forEach(list => {
+                    list.classList.remove('table-view');
+                });
+                document.getElementById('cardViewBtn').classList.add('active');
+                document.getElementById('tableViewBtn').classList.remove('active');
+            }
+        }
+
+        // Collapsible Section Toggle
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const toggle = document.getElementById(sectionId + '-toggle');
+            
+            if (section.classList.contains('collapsed')) {
+                section.classList.remove('collapsed');
+                toggle.style.transform = 'rotate(0deg)';
+            } else {
+                section.classList.add('collapsed');
+                toggle.style.transform = 'rotate(-90deg)';
+            }
+        }
+
+        // Initialize: All sections expanded by default
+        window.addEventListener('DOMContentLoaded', function() {
+            // Sections start expanded, so no need to collapse them initially
+        });
     </script>
 </body>
 </html>
