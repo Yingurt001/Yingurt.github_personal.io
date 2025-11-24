@@ -435,7 +435,11 @@ body {
     
     .container.blog-full-width {
         max-width: 100%;
-        padding: 1rem;
+        padding: 1rem 2rem;
+    }
+    
+    .blog-post .content {
+        width: 100%;
     }
     
     .sidebar {
@@ -556,13 +560,19 @@ body {
 /* 博客文章页面使用全宽布局 */
 .container.blog-full-width {
     grid-template-columns: 1fr;
-    max-width: 1400px;
+    max-width: 1200px;
+    padding: 2rem 4rem;
 }
 
 .blog-post {
     max-width: 100%;
     margin: 0;
     padding: 0;
+    width: 100%;
+}
+
+.blog-post .content {
+    max-width: 100%;
     width: 100%;
 }
 
