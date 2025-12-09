@@ -90,7 +90,7 @@
                         To assess whether different optimisation algorithms are able to recover the true logistic regression classifier, we visualised and compared with the ground-truth separator defined by $\mathbf{w}^* = (2, -3)$. Examining these boundaries provides an outcome-level assessment of estimation accuracy before analysing the optimisation dynamics.
                     </p>
                     <p>
-                        It is worth mentioning that for gradient descent method, we use step size of 10, because for step size of 0.2, it wastes too many iterations. By adjusting the step sizes, we find that their boundaries almost overlapped and their coefficients are all identical.
+                        It is worth mentioning that for gradient descent method, we use step size of 15, because for step size of 0.2, it wastes too many iterations. By adjusting the step sizes, we find that their boundaries almost overlapped and their coefficients are all identical, which would not happen for step size = 0.2.
                     </p>
 
                     <div style="text-align: center; margin: 2rem 0;">
@@ -109,6 +109,7 @@
                                 <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: left;"><strong>Method</strong></th>
                                 <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>$w_1$</strong></th>
                                 <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>$w_2$</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>Intercept</strong></th>
                                 <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>Slope</strong></th>
                                 <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>Angle (°)</strong></th>
                                 <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>$\|\mathbf{w} - \mathbf{w}^*\|$</strong></th>
@@ -119,6 +120,7 @@
                                 <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>True boundary</strong></td>
                                 <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">2.000</td>
                                 <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">-3.000</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.000</td>
                                 <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.6667</td>
                                 <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.00</td>
                                 <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.00</td>
@@ -127,6 +129,7 @@
                                 <td style="padding: 0.75rem; border: 1px solid #ddd;">Gradient Descent</td>
                                 <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">2.709</td>
                                 <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">-4.203</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.000</td>
                                 <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.6445</td>
                                 <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.89</td>
                                 <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">1.3963</td>
@@ -135,6 +138,7 @@
                                 <td style="padding: 0.75rem; border: 1px solid #ddd;">Newton's Method</td>
                                 <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">2.710</td>
                                 <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">-4.205</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.000</td>
                                 <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.6445</td>
                                 <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.89</td>
                                 <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">1.3991</td>
@@ -143,6 +147,7 @@
                                 <td style="padding: 0.75rem; border: 1px solid #ddd;">BFGS</td>
                                 <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">2.710</td>
                                 <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">-4.205</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.000</td>
                                 <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.6445</td>
                                 <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.89</td>
                                 <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">1.3991</td>
@@ -194,6 +199,66 @@
                         <li>When the step size exceeds $30$, the method fails to converge due to excessive oscillation around the optimum</li>
                         <li>A step size of $15$ strikes a good balance between stability and convergence speed</li>
                     </ul>
+                    <p>
+                        For this reason, we adopt step size $15$ in part (a) of the experiments. In part (b), we explore a wider range of step sizes, but all are kept below $30$ to ensure convergence.
+                    </p>
+
+                    <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                        <caption style="caption-side: top; font-weight: bold; margin-bottom: 0.5rem;">Convergence summary for Gradient Descent with different step sizes, compared with Newton's Method and BFGS.</caption>
+                        <thead>
+                            <tr style="background-color: #f3f4f6;">
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: left;"><strong>Method</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>Step Size</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>Iterations</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>Final Objective</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>Final $\|\nabla f(\mathbf{w})\|$</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd;">Gradient Descent</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.2</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">3595</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.229718</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$2.50 \times 10^{-5}$</td>
+                            </tr>
+                            <tr style="background-color: #f9fafb;">
+                                <td style="padding: 0.75rem; border: 1px solid #ddd;">Gradient Descent</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">5</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">211</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.229718</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$9.89 \times 10^{-7}$</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd;">Gradient Descent</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">15</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">70</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.229718</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$3.24 \times 10^{-7}$</td>
+                            </tr>
+                            <tr style="background-color: #f9fafb;">
+                                <td style="padding: 0.75rem; border: 1px solid #ddd;">Gradient Descent</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">30</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">51</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.229718</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$1.30 \times 10^{-7}$</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd;">Newton's Method</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">---</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">8</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.229718</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$4.01 \times 10^{-12}$</td>
+                            </tr>
+                            <tr style="background-color: #f9fafb;">
+                                <td style="padding: 0.75rem; border: 1px solid #ddd;">BFGS</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">---</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">17</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.229718</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$4.93 \times 10^{-11}$</td>
+                            </tr>
+                        </tbody>
+                    </table>
 
                     <h4>Optimization Trajectories in Parameter Space</h4>
                     <p>
@@ -271,7 +336,58 @@
                         $$\mathbf{s}^{\text{Newton}}_k = - \mathbf{H}_k^{-1} \nabla f(\mathbf{w}_k)$$
                     </div>
                     <p>
-                        The cosine similarities exceed $0.996$ in all three iterations, demonstrating that the early BFGS search directions are almost perfectly aligned with the corresponding Newton directions. This behaviour is consistent with the mechanism through which BFGS builds curvature information: even though the inverse Hessian approximation is initialised as the identity, the first few secant updates rapidly capture the local geometry of the logistic regression objective.
+                        To quantify how closely these directions align, we compute the cosine similarity:
+                    </p>
+                    <div style="text-align: center; margin: 1.5rem 0;">
+                        $$\rho_k = \frac{\langle \mathbf{d}^{\text{BFGS}}_k, \mathbf{s}^{\text{Newton}}_k \rangle}{\|\mathbf{d}^{\text{BFGS}}_k\|_2 \|\mathbf{s}^{\text{Newton}}_k\|_2}$$
+                    </div>
+                    <p>
+                        which equals $1$ when the two update directions are perfectly aligned.
+                    </p>
+
+                    <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                        <caption style="caption-side: top; font-weight: bold; margin-bottom: 0.5rem;">Alignment between early BFGS and Newton directions.</caption>
+                        <thead>
+                            <tr style="background-color: #f3f4f6;">
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>Iteration $k$</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>$\mathbf{d}^{\text{BFGS}}_k$</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>$\mathbf{s}^{\text{Newton}}_k$</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>$\rho_k$</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$(0.5338, -0.6599)$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$(0.9418, -1.3614)$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.9972</td>
+                            </tr>
+                            <tr style="background-color: #f9fafb;">
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">1</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$(0.5257, -0.7002)$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$(0.6548, -1.0350)$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.9968</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">2</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$(0.4678, -0.6681)$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$(0.6064, -0.9834)$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.9983</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p>
+                        The cosine similarities exceed $0.996$ in all three iterations, demonstrating that the early BFGS search directions are almost perfectly aligned with the corresponding Newton directions. This behaviour is consistent with the mechanism through which BFGS builds curvature information: even though the inverse Hessian approximation is initialised as the identity, the first few secant updates
+                    </p>
+                    <div style="text-align: center; margin: 1.5rem 0;">
+                        $$B_{k+1} = B_k + \frac{\mathbf{y}_k \mathbf{y}_k^\top}{\mathbf{y}_k^\top \mathbf{s}_k} - \frac{B_k \mathbf{s}_k \mathbf{s}_k^\top B_k}{\mathbf{s}_k^\top B_k \mathbf{s}_k}$$
+                    </div>
+                    <p>
+                        rapidly capture the local geometry of the logistic regression objective. Because the Hessian varies smoothly across the parameter space, each $(\mathbf{s}_k, \mathbf{y}_k)$ pair provides highly informative curvature information, allowing the BFGS directions to become effectively Newton-like after only a few iterations.
+                    </p>
+                    <p>
+                        In summary, the early alignment between $\mathbf{d}^{\text{BFGS}}_k$ and $\mathbf{s}^{\text{Newton}}_k$ explains why BFGS quickly enters a superlinear convergence regime: the method reconstructs an accurate inverse Hessian approximation long before full curvature information is accumulated.
                     </p>
 
                     <h2>Part B: Nearly Collinear Data and Its Effect on Convergence</h2>
@@ -320,15 +436,84 @@
                         <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Gradient Descent trajectory under different collinearity strengths. Stronger collinearity produces increasingly elongated contours and severely distorted optimisation paths.</p>
                     </div>
 
+                    <h4>Gradient Descent Under Poor Curvature: Identifying Slowdown and Relating It to Gradient Norms and Hessian Spectrum</h4>
+                    <p>
+                        For $\varepsilon=0.01$ and $\varepsilon=0.001$, the objective initially drops quickly but soon enters a long, flat region where progress becomes extremely slow. This flat region aligns exactly with the plateau in the gradient norms observed in the figure above. Although GD continues to update the parameters, the magnitudes of these updates are too small to produce meaningful improvement in the objective.
+                    </p>
+                    <p>
+                        <strong>Gradient norms</strong> confirm that updates are restricted to the steep curvature direction. During plateau regions, the gradient norm remains at $10^{-5}$--$10^{-6}$, indicating that the gradient components in shallow-curvature directions are nearly zero. Thus GD predominantly moves along the steepest direction of the Hessian, repeatedly overshooting and correcting, while achieving negligible movement along the flat direction where the minimiser lies.
+                    </p>
+                    <p>
+                        <strong>Hessian spectrum</strong> explains the origin of the slowdown. At intermediate $\varepsilon$, the Hessian's smallest eigenvalue becomes extremely small while the largest eigenvalue remains moderate. This produces an extreme condition number, causing:
+                    </p>
+                    <ul>
+                        <li>excessively small steps in the shallow direction, and</li>
+                        <li>zigzagging across the valley in the steep direction.</li>
+                    </ul>
+                    <p>
+                        This is consistent with the highly elongated contours shown in the figure above. Since Newton's method or BFGS would rescale gradients using curvature information, they would avoid this problem, but GD—lacking curvature correction—is fundamentally misaligned with the geometry.
+                    </p>
+                    <p>
+                        When $\varepsilon$ becomes even smaller (e.g., $10^{-4}$), the smallest eigenvalue approaches zero and the loss landscape collapses into a nearly one-dimensional structure. Ironically, this <em>improves</em> GD performance, as the method can move directly along the dominant curvature direction without zigzagging.
+                    </p>
+                    <p>
+                        Overall, the slowdown of GD is most severe not when collinearity is strongest, but when the Hessian is maximally anisotropic. The combination of tiny gradient components along shallow directions and curvature-induced misalignment explains the dramatic inefficiency of GD in this region.
+                    </p>
+
                     <h3>Newton's Method Behaviour Under Near-Collinearity</h3>
                     <p>
-                        We repeat the collinearity experiment for Newton's method using the perturbed feature construction. The following figure reports the objective and gradient-norm trajectories for $\varepsilon \in \{0.1, 0.01, 0.001, 0.0001\}$.
+                        We repeat the collinearity experiment for Newton's method using the perturbed feature construction $X_{\cdot,2} = X_{\cdot,1} + \varepsilon \xi$. The following figure reports the objective and gradient-norm trajectories for $\varepsilon \in \{0.1, 0.01, 0.001, 0.0001\}$.
                     </p>
 
                     <div style="text-align: center; margin: 2rem 0;">
                         <img src="../blog-images/newton/06_collinearity_newton.png" alt="Newton method under collinearity" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                         <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Newton method objective values (left) and gradient norms (right) across collinearity levels $\varepsilon$.</p>
                     </div>
+
+                    <p>
+                        The results demonstrate that Newton's method is remarkably robust to moderate levels of feature collinearity. As $\varepsilon$ decreases from $10^{-1}$ to $10^{-4}$, the conditioning of $X^\top X$ and of the Hessian deteriorates by several orders of magnitude, yet the algorithm maintains essentially identical objective trajectories and converges in roughly six iterations for all tested values. This insensitivity arises from the quadratic model used by Newton's method, together with the backtracking line search, which damps overly aggressive steps when the Hessian approaches singularity.
+                    </p>
+                    <p>
+                        However, the gradient-norm curves reveal the underlying numerical effects more clearly. For larger $\varepsilon$, the gradient norm contracts rapidly and approaches machine precision within only a few iterations. When $\varepsilon$ becomes very small, the near-collinearity induces extreme ill-conditioning in the Hessian; although the objective still decreases monotonically, the gradient norm exhibits slower decay and occasional plateaus, reflecting the reduced reliability of the Newton direction. Nevertheless, in the regime tested here, these effects remain mild, and the final classifier parameters and accuracies are practically unchanged across all collinearity levels.
+                    </p>
+
+                    <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                        <caption style="caption-side: top; font-weight: bold; margin-bottom: 0.5rem;">Newton's method performance under different collinearity levels.</caption>
+                        <thead>
+                            <tr style="background-color: #f3f4f6;">
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>$\varepsilon$</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>Condition number</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>Iterations</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>Accuracy</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.1</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$4.14 \times 10^{2}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">6</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.7050</td>
+                            </tr>
+                            <tr style="background-color: #f9fafb;">
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.01</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$4.21 \times 10^{4}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">6</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.7050</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.001</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$3.87 \times 10^{6}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">6</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.7050</td>
+                            </tr>
+                            <tr style="background-color: #f9fafb;">
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.0001</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$3.99 \times 10^{8}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">6</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.7000</td>
+                            </tr>
+                        </tbody>
+                    </table>
 
                     <p>
                         As $\varepsilon$ decreases, the Hessian condition number increases from $10^2$ to nearly $10^9$, yet the algorithm still terminates in six iterations with almost unchanged accuracy. However, under strong collinearity, the early iterations (1--4) display clear signs of instability: slow decrease of the objective, small accepted step sizes, and a mismatch between gradient norm and objective improvement.
@@ -365,13 +550,41 @@
 
                     <h3>Hessian Regularisation and Conditioning</h3>
                     <p>
-                        To understand the behaviour of Newton's method on the nearly collinear dataset, we analyse the smallest eigenvalue of the Hessian both before and after adding a ridge regularisation term $\lambda I$.
+                        To understand the behaviour of Newton's method on the nearly collinear dataset, we analyse the smallest eigenvalue of the Hessian both before and after adding a ridge regularisation term $\lambda I$. The numerical results are summarised in the table below, with the corresponding optimisation histories shown in the figures.
                     </p>
 
                     <div style="text-align: center; margin: 2rem 0;">
                         <img src="../blog-images/newton/11_history_unreg.png" alt="Unregularised Newton" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                         <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Unregularised Newton on nearly collinear data (step norm, line search, gradient norm).</p>
                     </div>
+
+                    <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                        <caption style="caption-side: top; font-weight: bold; margin-bottom: 0.5rem;">Hessian conditioning before and after regularisation.</caption>
+                        <thead>
+                            <tr style="background-color: #f3f4f6;">
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: left;"><strong>Quantity</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>Unregularised $H$</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>Regularised $H + \lambda I$</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd;">Smallest eigenvalue $\lambda_{\min}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$8.3841 \times 10^{-8}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$1.0000 \times 10^{-2}$</td>
+                            </tr>
+                            <tr style="background-color: #f9fafb;">
+                                <td style="padding: 0.75rem; border: 1px solid #ddd;">Largest eigenvalue $\lambda_{\max}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$2.5326 \times 10^{-1}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$2.6372 \times 10^{-1}$</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd;">Condition number $\kappa = \lambda_{\max}/\lambda_{\min}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$3.0207 \times 10^{6}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$2.64 \times 10^{1}$</td>
+                            </tr>
+                        </tbody>
+                    </table>
 
                     <div style="text-align: center; margin: 2rem 0;">
                         <img src="../blog-images/newton/11_history_reg.png" alt="Regularised Newton" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
@@ -383,6 +596,18 @@
                     </p>
                     <p>
                         After adding ridge regularisation $\widetilde{H}(\mathbf{w}) = H(\mathbf{w}) + \lambda I$ with $\lambda = 10^{-2}$, the smallest eigenvalue is lifted to $\lambda_{\min}(\widetilde{H}) \approx 10^{-2}$, reducing the condition number by <strong>five orders of magnitude</strong>. Thus, the regularisation term stabilises the curvature matrix without significantly changing $\lambda_{\max}$.
+                    </p>
+                    <p>
+                        <strong>Effect on the Newton step:</strong> The instability of the unregularised Newton direction follows directly from $\mathbf{s}_k = -H^{-1} \mathbf{g}_k$. Because $\lambda_{\min}(H)$ is extremely small, the inverse Hessian amplifies gradient components in the nearly-null direction, producing <em>very large</em> Newton steps (step norm $\approx 140$ on the first iteration). This behaviour is visible in the unregularised plot: the step norms spike, yet the line search still accepts $t=1$, because the step happens to decrease the loss. Such behaviour is characteristic of a severely ill-conditioned quadratic model: Newton steps point almost orthogonally to the true descent direction and have highly unpredictable magnitudes.
+                    </p>
+                    <p>
+                        After regularisation, the Newton step becomes well-scaled. The regularised plot shows that step norms shrink immediately to $\approx 10^{-3}$, and the line search accepts $t=1$ at every iteration. The step direction also aligns more closely with $-\mathbf{g}_k$, as expected from the Levenberg-Marquardt modification, which interpolates between Newton's method and gradient descent.
+                    </p>
+                    <p>
+                        <strong>Effect on convergence:</strong> The optimisation histories clearly reflect the eigenvalue structure. For unregularised Newton, the gradient norm drops rapidly at first, but this behaviour is unreliable. The excessive sensitivity to the nearly-null direction explains the erratic, sometimes exploding steps observed. For regularised Newton, the method becomes extremely stable, with monotone decrease in the gradient norm. However, replacing $H$ by $H+\lambda I$ destroys true Newton curvature, so the method loses quadratic convergence. As visible in the regularised plot, the gradient norm stalls around $10^{-5}$ and decreases only linearly thereafter, requiring thousands of iterations for small progress.
+                    </p>
+                    <p>
+                        <strong>Summary:</strong> The eigenvalue comparison explains all observed behaviour: before regularisation, the Hessian is nearly singular, leading to unstable Newton steps; after regularisation, the curvature is well-conditioned, steps become stable, and the method converges safely albeit more slowly. This demonstrates the central role of Hessian conditioning in determining the stability and practical performance of Newton-type methods on ill-conditioned datasets.
                     </p>
 
                     <h2>Part C: Method-Specific Anomalies</h2>
@@ -403,41 +628,149 @@
 
                     <h3>Anomalies for Newton's Method</h3>
                     <p>
-                        In the well-conditioned regime, Newton's method behaves exactly as theory predicts. However, once collinearity is introduced, the stability of Newton's method deteriorates quickly. The most severe pathology occurs at $\varepsilon = 10^{-5}$, where the smallest eigenvalue of the Hessian collapses to $10^{-11}$--$10^{-12}$, while the largest eigenvalue remains on the order of $10^{-1}$. As a result, the condition number reaches the extreme range $\kappa(H_k) \approx 10^{10}$ throughout the iteration.
+                        In the well-conditioned regime, Newton's method behaves exactly as theory predicts. The Newton search direction $\mathbf{s}_k = -H_k^{-1}\nabla f(\mathbf{w}_k)$ is well aligned with the true descent direction, and the update $\mathbf{w}_{k+1} = \mathbf{w}_k + t_k \mathbf{s}_k$ is almost always accepted with the full step $t_k = 1$.
                     </p>
                     <p>
-                        Such an ill-conditioned Hessian severely distorts the Newton direction: the updates alternate between very large steps (e.g., $\|\mathbf{s}_0\| \approx 244$, $\|\mathbf{s}_1\| \approx 1280$) and extremely small steps ($\|\mathbf{s}_k\| \approx 10^{-6}$), depending on how the gradient aligns with the nearly singular eigenspace.
+                        Once strong collinearity is introduced, however, the stability of Newton's method begins to deteriorate. As $\varepsilon$ becomes small, the Hessian matrix approaches singularity and the local quadratic model $m_k(\mathbf{s}) = f(\mathbf{w}_k) + \nabla f(\mathbf{w}_k)^{\top}\mathbf{s} + \tfrac{1}{2} \mathbf{s}^{\top}H_k \mathbf{s}$ becomes a much poorer approximation of the true objective. Consequently, the line search starts to reject full Newton steps and forces the algorithm to take significantly damped steps. This behaviour is reflected in the gradient-norm trajectories: instead of the smooth, near-quadratic decrease seen in the well-conditioned case, the curves for small $\varepsilon$ exhibit plateaus and slower decay, indicating that the Newton direction is increasingly contaminated by the ill-conditioning of the Hessian.
+                    </p>
+                    <p>
+                        The most severe pathology occurs at $\varepsilon = 10^{-5}$, summarised in the table below. Here the smallest eigenvalue of the Hessian collapses to $10^{-11}$--$10^{-12}$, while the largest eigenvalue remains on the order of $10^{-1}$. As a result, the condition number reaches the extreme range $\kappa(H_k) \approx 10^{10}$ throughout the iteration. Such an ill-conditioned Hessian severely distorts the Newton direction: the updates alternate between very large steps (e.g., $\|\mathbf{s}_0\| \approx 244$, $\|\mathbf{s}_1\| \approx 1280$) and extremely small steps ($\|\mathbf{s}_k\| \approx 10^{-6}$), depending on how the gradient aligns with the nearly singular eigenspace.
+                    </p>
+
+                    <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                        <caption style="caption-side: top; font-weight: bold; margin-bottom: 0.5rem;">Newton diagnostics under extreme collinearity ($\varepsilon = 10^{-5}$). Only the first eight iterations are shown, since all subsequent iterations exhibit identical Hessian statistics and vanishing step sizes ($t_k < 10^{-9}$). These early iterations contain all instability phenomena: collapsing eigenvalues, enormous condition numbers, and sharp reductions in step size.</caption>
+                        <thead>
+                            <tr style="background-color: #f3f4f6;">
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>Iter</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>$f(\mathbf{w})$</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>$\|\nabla f\|$</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>$t$</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>$\lambda_{\min}$</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>$\lambda_{\max}$</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>$\kappa(H)$</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.5668</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$3.40 \times 10^{-1}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">1.0</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$1.13 \times 10^{-11}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.493</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$4.35 \times 10^{10}$</td>
+                            </tr>
+                            <tr style="background-color: #f9fafb;">
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">1</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.5626</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$4.97 \times 10^{-2}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">1.0</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$9.20 \times 10^{-12}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.310</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$3.36 \times 10^{10}$</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">2</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.5626</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$4.24 \times 10^{-3}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">1.0</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$8.46 \times 10^{-12}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.258</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$3.05 \times 10^{10}$</td>
+                            </tr>
+                            <tr style="background-color: #f9fafb;">
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">3</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.5626</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$4.06 \times 10^{-5}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">1.0</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$8.38 \times 10^{-12}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.253</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$3.02 \times 10^{10}$</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">4</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.5626</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$3.85 \times 10^{-9}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.5</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$8.38 \times 10^{-12}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.253</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$3.02 \times 10^{10}$</td>
+                            </tr>
+                            <tr style="background-color: #f9fafb;">
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">5</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.5626</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$1.92 \times 10^{-9}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.25</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$8.38 \times 10^{-12}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.253</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$3.02 \times 10^{10}$</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">6</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.5626</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$1.44 \times 10^{-9}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.5</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$8.38 \times 10^{-12}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.253</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$3.02 \times 10^{10}$</td>
+                            </tr>
+                            <tr style="background-color: #f9fafb;">
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">7</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.5626</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$7.21 \times 10^{-10}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$1.49 \times 10^{-8}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$8.38 \times 10^{-12}$</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.253</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">$3.02 \times 10^{10}$</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p>
+                        Because the raw Newton direction frequently violates the Armijo condition, the line search must shrink the step size $t_k$ by multiple orders of magnitude. This is first observed at iterations 4--6, where $t_k$ drops from $1 \to 0.5 \to 0.25$, and most dramatically at iteration 7, where the step size collapses to $t_7 \approx 10^{-8}$. Despite these adjustments, the objective value barely changes across iterations 0--7, indicating that the iterates are sliding along a nearly flat curvature valley rather than making meaningful progress. This "objective plateau" effect is visible in the collinearity figure, where the contours are almost tangent to the Newton direction under extreme collinearity.
+                    </p>
+                    <p>
+                        This behaviour highlights the fundamental limitation of Newton's method under collinearity: the algorithm relies entirely on local curvature information encoded in $H_k$, and when this information becomes unreliable, the method fails. The line search cannot compensate for the distorted Newton direction, and the updates oscillate along the valley floor without producing meaningful descent in $f(\mathbf{w})$. This results in pathological behaviour such as tiny $t_k$, large $\|\mathbf{s}_k\|$, or premature termination depending on the chosen tolerance.
                     </p>
 
                     <h3>Anomalies for BFGS: Sudden Superlinear Convergence Transition</h3>
                     <p>
-                        BFGS exhibits a distinctive anomaly: a <strong>sudden transition from a slow, almost linear regime to rapid superlinear convergence</strong>. The effect is visible in both the objective values and the gradient norms.
+                        BFGS exhibits two distinctive anomalies:
                     </p>
+                    <p>
+                        <strong>Anomaly 1: Early-iteration oscillatory behaviour.</strong> In the first few iterations, the BFGS iterates exhibit a noticeable curvature-induced oscillation. This is visible in the trajectory plot as the search path bends repeatedly before settling into a more stable direction. The behaviour originates from the inaccuracy of the early Hessian approximations. Because the secant information $\mathbf{y}_k = \mathbf{g}_{k+1} - \mathbf{g}_k$ is still noisy and poorly aligned with the true curvature, the BFGS inverse Hessian estimate $H_k$ initially oscillates between under- and over-estimating curvature. This causes the search directions to fluctuate and results in irregular progress during the early iterations. Such oscillation is characteristic of quasi-Newton methods, and does not appear in either gradient descent or exact Newton steps.
+                    </p>
+                    <p>
+                        <strong>Anomaly 2: Sudden superlinear convergence transition.</strong> After this oscillatory phase, BFGS enters a noticeably different regime. Between iterations $k=11$ and $k=14$, the gradient norm collapses sharply, indicating the onset of superlinear convergence. The transition is non-smooth: the gradient norm decays slowly for $k \le 9$, then accelerates abruptly:
+                    </p>
+                    <div style="text-align: center; margin: 1.5rem 0;">
+                        $$\|\mathbf{g}_{12}\| \to \|\mathbf{g}_{13}\|: \times 10.7, \qquad \|\mathbf{g}_{13}\| \to \|\mathbf{g}_{14}\|: \times 47.2$$
+                    </div>
 
                     <div style="text-align: center; margin: 2rem 0;">
                         <img src="../blog-images/newton/10_anormalies_BFGS.png" alt="BFGS anomalies" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">BFGS convergence anomalies. The gradient norm exhibits a sudden superlinear collapse between iterations 13--15.</p>
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">BFGS convergence anomalies. The gradient norm exhibits a sudden superlinear collapse between iterations 13--15, marking the transition from linear to superlinear convergence.</p>
                     </div>
 
                     <p>
-                        After an oscillatory phase, BFGS enters a noticeably different regime. Between iterations $k=11$ and $k=14$, the gradient norm collapses sharply, indicating the onset of superlinear convergence. The transition is non-smooth: the gradient norm decays slowly for $k \le 9$, then accelerates abruptly.
+                        <strong>Cause of the anomaly:</strong> The phenomenon is explained by the secant update that BFGS uses to approximate the Hessian:
                     </p>
+                    <div style="text-align: center; margin: 1.5rem 0;">
+                        $$B_{k+1} = B_k + \frac{\mathbf{y}_k \mathbf{y}_k^\top}{\mathbf{y}_k^\top \mathbf{s}_k} - \frac{B_k \mathbf{s}_k \mathbf{s}_k^\top B_k}{\mathbf{s}_k^\top B_k \mathbf{s}_k}, \qquad \mathbf{s}_k = \mathbf{w}_{k+1} - \mathbf{w}_k, \quad \mathbf{y}_k = \mathbf{g}_{k+1} - \mathbf{g}_k$$
+                    </div>
                     <p>
-                        The phenomenon is explained by the secant update that BFGS uses to approximate the Hessian. In early iterations, $y_k$ contains weak curvature information, making $B_k$ a poor Hessian approximation and yielding gradient-descent-like behaviour. Once the iterates move closer to the minimiser, $y_k$ captures richer curvature, causing $B_k$ to improve abruptly and produce near-Newton search directions. This sharp refinement triggers the observed superlinear collapse in the gradient norm.
+                        In early iterations, $\mathbf{y}_k$ contains weak curvature information, making $B_k$ a poor Hessian approximation and yielding gradient-descent-like behaviour. Once the iterates move closer to the minimiser, $\mathbf{y}_k$ captures richer curvature, causing $B_k$ to improve abruptly and produce near-Newton search directions. This sharp refinement triggers the observed superlinear collapse in the gradient norm.
                     </p>
 
                     <h2>Conclusion</h2>
                     <p>
-                        Across all experiments conducted in this research, we compared the behaviour of Gradient Descent, Newton's Method, and BFGS in both well-conditioned and nearly collinear logistic regression settings. When the design matrix is well conditioned, all three algorithms recover decision boundaries that are nearly indistinguishable from the true separator, and they converge to parameter estimates whose geometric errors differ only marginally.
+                        Across the experiments in this research, we compared Gradient Descent, Newton's Method, and BFGS under both well-conditioned and nearly collinear logistic-regression settings. In the well-conditioned regime, all three algorithms recover almost identical decision boundaries and parameter estimates; their main differences lie in optimisation efficiency. Newton's Method converges in only a few iterations, BFGS exhibits its characteristic transition to superlinear convergence, and fixed-step Gradient Descent remains substantially slower due to its lack of curvature information.
                     </p>
                     <p>
-                        The main differences arise not in solution quality but in optimisation efficiency: Newton's Method achieves the fastest convergence, followed by BFGS with its characteristic transition to superlinear convergence, while fixed-step Gradient Descent remains significantly slower due to its inability to incorporate curvature information.
+                        Under near-collinearity, the algorithms behave more differently. Gradient Descent experiences severe slowdowns as the Hessian becomes highly anisotropic, leading to long plateaus in both the objective and the gradient norm. Newton's Method still terminates quickly, but its early iterations reveal numerical instabilities: distorted search directions, reduced step sizes enforced by the line search, and a disconnect between shrinking gradients and nearly flat objective values. These effects stem from the collapse of the smallest Hessian eigenvalue, which amplifies Newton steps along nearly null directions. BFGS initially resembles Gradient Descent, but as its inverse-Hessian approximation improves, it transitions toward Newton-like convergence.
                     </p>
                     <p>
-                        The behaviour diverges noticeably under near-collinearity. Gradient Descent suffers dramatic slowdowns precisely when the Hessian exhibits highly anisotropic curvature, with long plateaus in both the gradient norm and the objective value. In contrast, Newton's Method maintains rapid global convergence in iteration count, but its early iterations reveal clear signs of instability: distorted update directions, shrinking step sizes enforced by the line search, and a mismatch between decreasing gradient norms and almost constant objective values.
-                    </p>
-                    <p>
-                        Overall, the results highlight the decisive role of curvature and conditioning in shaping optimisation dynamics. While Newton's Method and BFGS exhibit strong performance even in challenging regimes, Gradient Descent remains sensitive to the geometry of the loss surface. The experiments underscore both the strengths and limitations of each method, and they illustrate how spectrum-driven effects such as ill-conditioning and near-null directions fundamentally influence the behaviour of second-order and quasi-Newton algorithms.
+                        Overall, the results highlight how curvature and conditioning shape optimisation dynamics. Newton's Method and BFGS remain effective even in challenging regimes, whereas Gradient Descent is highly sensitive to ill-conditioning and the geometry of the loss landscape.
                     </p>
 
                     <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1rem; margin: 1.5rem 0; border-radius: 4px;">
