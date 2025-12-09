@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparing Optimization Algorithms: Gradient Descent, Newton's Method, and BFGS - Ying Zhang</title>
+    <link rel="stylesheet" href="../styles.css">
+    <!-- MathJax for rendering mathematical equations -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-links">
+                <a href="../index.html">
+                    <svg fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+                    Home
+                </a>
+                <a href="../blog.html">
+                    <svg fill="currentColor" viewBox="0 0 20 20"><path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"></path><path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path></svg>
+                    Blog
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container blog-full-width">
+        <main class="content blog-post">
+            <a href="../blog.html" class="back-to-blog">← Back to Blog</a>
+            
+            <article>
+                <div class="blog-post-header">
+                    <h1 class="blog-post-title">Comparing Optimization Algorithms: Gradient Descent, Newton's Method, and BFGS</h1>
+                    <div class="blog-post-meta">
+                        <span>📅 November 24, 2025</span>
+                        <span>🏷️ Optimization, Machine Learning, Gradient Descent, Newton's Method, BFGS, Logistic Regression</span>
+                    </div>
+                </div>
+
+                <div class="blog-post-content">
+                    <h2>Introduction</h2>
+                    <p>
+                        The aim of this research is to compare the behaviour of three optimisation algorithms: <strong>gradient descent</strong>, <strong>Newton's method</strong>, and <strong>BFGS</strong> within a controlled logistic regression setting.
+                    </p>
+                    <p>
+                        For a feature vector $\mathbf{x} \in \mathbb{R}^p$, logistic regression models the positive-class probability via:
+                    </p>
+                    <div style="text-align: center; margin: 1.5rem 0;">
+                        $$P(y=1 \mid \mathbf{x}) = \sigma(\mathbf{x}^\top \mathbf{w}) = \frac{1}{1 + e^{-\mathbf{x}^\top \mathbf{w}}}$$
+                    </div>
+                    <p>
+                        This leads to a linear decision boundary $\mathbf{x}^\top \mathbf{w} = 0$ in the two-dimensional case.
+                    </p>
+                    <p>
+                        To provide a tractable environment for comparison, we construct a synthetic dataset from a known logistic model with true log-odds:
+                    </p>
+                    <div style="text-align: center; margin: 1.5rem 0;">
+                        $$\text{logit}(P(y=1)) = 2x_1 - 3x_2$$
+                    </div>
+                    <p>
+                        corresponding to the ground-truth parameter vector:
+                    </p>
+                    <div style="text-align: center; margin: 1.5rem 0;">
+                        $$\mathbf{w}^* = (2, -3)$$
+                    </div>
+
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../blog-images/newton/00_true_boundary.png" alt="Synthetic dataset and true decision boundary" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Synthetic dataset and the true decision boundary corresponding to $\mathbf{w}^* = (2,-3)$.</p>
+                    </div>
+
+                    <p>
+                        In this research, <strong>Part A</strong> compares the convergence behaviour and the estimated decision boundaries obtained by gradient descent, Newton's method, and BFGS on the synthetic dataset. <strong>Part B</strong> investigates how near-collinearity in the design matrix affects curvature, conditioning, and the resulting performance and stability of these optimisation algorithms.
+                    </p>
+
+                    <h2>Part A: Decision Boundaries and Convergence Analysis</h2>
+
+                    <h3>Decision Boundaries Comparison</h3>
+                    <p>
+                        To assess whether different optimisation algorithms are able to recover the true logistic regression classifier, we visualised and compared with the ground-truth separator defined by $\mathbf{w}^* = (2, -3)$. Examining these boundaries provides an outcome-level assessment of estimation accuracy before analysing the optimisation dynamics.
+                    </p>
+                    <p>
+                        It is worth mentioning that for gradient descent method, we use step size of 10, because for step size of 0.2, it wastes too many iterations. By adjusting the step sizes, we find that their boundaries almost overlapped and their coefficients are all identical.
+                    </p>
+
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../blog-images/newton/03_decision_boundaries_comparison.png" alt="Decision boundaries comparison" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Comparison of decision boundaries obtained by different algorithms</p>
+                    </div>
+
+                    <p>
+                        The figure shows the decision boundaries learned by Gradient Descent, Newton's Method, and BFGS, plotted alongside the true boundary. All three methods produce nearly identical separating lines, indicating that they all can recover a classifier close to the true model.
+                    </p>
+
+                    <h4>Quantitative Comparison</h4>
+                    <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0;">
+                        <thead>
+                            <tr style="background-color: #f3f4f6;">
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: left;"><strong>Method</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>$w_1$</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>$w_2$</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>Slope</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>Angle (°)</strong></th>
+                                <th style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;"><strong>$\|\mathbf{w} - \mathbf{w}^*\|$</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd;"><strong>True boundary</strong></td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">2.000</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">-3.000</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.6667</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.00</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.00</td>
+                            </tr>
+                            <tr style="background-color: #f9fafb;">
+                                <td style="padding: 0.75rem; border: 1px solid #ddd;">Gradient Descent</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">2.709</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">-4.203</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.6445</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.89</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">1.3963</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd;">Newton's Method</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">2.710</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">-4.205</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.6445</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.89</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">1.3991</td>
+                            </tr>
+                            <tr style="background-color: #f9fafb;">
+                                <td style="padding: 0.75rem; border: 1px solid #ddd;">BFGS</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">2.710</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">-4.205</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.6445</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">0.89</td>
+                                <td style="padding: 0.75rem; border: 1px solid #ddd; text-align: center;">1.3991</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p>
+                        All methods yield slopes that are very close to the ground-truth value. The estimates concentrate around $0.6445$, only slightly below $2/3$, indicating that each algorithm successfully captures the overall geometry of the separating line. The angular deviations are all below $1°$, showing that the estimated boundaries are almost perfectly aligned with the true separator.
+                    </p>
+
+                    <h3>Convergence Behaviour Analysis</h3>
+                    <p>
+                        After confirming that all three optimisation methods recover decision boundaries close to the true separating hyperplane, we now analyse their convergence behaviour in more detail.
+                    </p>
+
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../blog-images/newton/02_convergence_comparison.png" alt="Objective value convergence" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Objective value convergence for Gradient Descent, Newton's Method, and BFGS.</p>
+                    </div>
+
+                    <p>
+                        As shown in the figure, <strong>Newton's Method</strong> exhibits the fastest convergence, reaching the optimum in only eight iterations. <strong>BFGS</strong> converges slightly more slowly, requiring seventeen iterations, whereas fixed-step <strong>Gradient Descent</strong> is significantly slower: even with a favourable step size, it still takes roughly seventy iterations to reach a similar objective value.
+                    </p>
+                    <p>
+                        These observations are consistent with the classical convergence rates of the algorithms:
+                    </p>
+                    <ul>
+                        <li>Newton's Method achieves <strong>quadratic convergence</strong></li>
+                        <li>BFGS enjoys <strong>superlinear convergence</strong></li>
+                        <li>Gradient Descent converges only <strong>linearly</strong></li>
+                    </ul>
+
+                    <h4>Effect of Step Size on Gradient Descent</h4>
+                    <p>
+                        For fixed-step Gradient Descent, the choice of the step size has a substantial impact on the convergence behaviour. A small step size results in smooth but extremely slow progress, whereas a very large step size causes strong oscillations in the gradient norm and may prevent the method from converging at all.
+                    </p>
+
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../blog-images/newton/06_normal_gradient_descent_norm_all.png" alt="Gradient descent with different step sizes" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Gradient norm convergence for different step sizes</p>
+                    </div>
+
+                    <p>
+                        The figure illustrates these behaviours for different step sizes:
+                    </p>
+                    <ul>
+                        <li>For step size $0.2$, the descent is smooth but very slow</li>
+                        <li>When the step size exceeds $30$, the method fails to converge due to excessive oscillation around the optimum</li>
+                        <li>A step size of $15$ strikes a good balance between stability and convergence speed</li>
+                    </ul>
+
+                    <h4>Optimization Trajectories in Parameter Space</h4>
+                    <p>
+                        To visualise how the iterates evolve in the parameter space, the following figure presents the optimisation trajectories for Gradient Descent, BFGS, and Newton's Method. Since the problem is two-dimensional, the paths can be directly plotted in the $(w_1, w_2)$ plane.
+                    </p>
+
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../blog-images/newton/02_convergence_simple.png" alt="Optimization trajectories" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Optimisation trajectories of Gradient Descent, BFGS, and Newton's Method.</p>
+                    </div>
+
+                    <p>
+                        The trajectories reveal several characteristic behaviours:
+                    </p>
+                    <ul>
+                        <li><strong>Gradient Descent (step size = 30):</strong> The elongated level sets of the objective create strong curvature anisotropy, causing Gradient Descent to follow a pronounced zigzag pattern. Since each update direction is orthogonal to the level sets, the method oscillates heavily across directions of differing curvature. The large step size further amplifies this behaviour, leading to overshooting and oscillation near the minimiser.</li>
+                        <li><strong>BFGS:</strong> The early iterations exhibit GD-like behaviour because the inverse Hessian approximation is initially crude. As more secant updates accumulate curvature information, the search directions become better scaled, and the trajectory rapidly transitions toward a Newton-like path. This improvement reflects the onset of BFGS's characteristic superlinear convergence.</li>
+                        <li><strong>Newton's Method:</strong> Using the exact Hessian, Newton's Method produces an update direction that almost directly points to the minimiser from the very first step. The resulting trajectory is short and nearly linear, demonstrating optimal rescaling and the expected quadratic convergence rate.</li>
+                    </ul>
+
+                    <h4>Gradient Norm Convergence</h4>
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../blog-images/newton/02_convergence_norm.png" alt="Gradient norm convergence" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Gradient norm convergence for the three optimisation methods.</p>
+                    </div>
+
+                    <p>
+                        Using a step size of $30$ for Gradient Descent reveals several noteworthy comparisons:
+                    </p>
+                    <ul>
+                        <li><strong>Newton's Method</strong> exhibits the fastest decay of the gradient norm, consistent with its quadratic convergence. The gradient decreases by several orders of magnitude within only a few iterations.</li>
+                        <li><strong>Gradient Descent shows a surprisingly fast initial drop</strong> in the gradient norm—faster than both BFGS and Newton in the first few steps. This behaviour is caused by the large step size, which produces an aggressive initial movement. However, this does not translate into efficient convergence: GD suffers from oscillation, lacks curvature adjustment, and ultimately converges only linearly.</li>
+                        <li><strong>BFGS initially progresses more slowly</strong> because its inverse Hessian approximation is still inaccurate. Once enough curvature information is accumulated, the method accelerates sharply, entering the superlinear convergence regime and eventually overtaking Gradient Descent by a large margin.</li>
+                    </ul>
+
+                    <h3>Superlinear Convergence of Newton's Method</h3>
+                    <p>
+                        To empirically verify superlinear convergence, we compare the error ratios $e_{k+1}/e_k$ for gradient descent and Newton's method, where $e_k = \|\mathbf{x}_k - \mathbf{x}^*\|$. A sequence is superlinear if:
+                    </p>
+                    <div style="text-align: center; margin: 1.5rem 0;">
+                        $$\frac{e_{k+1}}{e_k} \longrightarrow 0$$
+                    </div>
+                    <p>
+                        whereas linear convergence yields a ratio that stabilizes at a constant $0 < C < 1$.
+                    </p>
+                    <p>
+                        Gradient descent relies on first-order information, and its theoretical rate implies $e_{k+1} \le C e_k$. This behavior is reflected in our data: the first five ratios are $(0.9854, 0.9858, 0.9863, 0.9867, 0.9871)$, which remain nearly constant. This matches the expected linear convergence.
+                    </p>
+                    <p>
+                        In contrast, Newton's method uses curvature information:
+                    </p>
+                    <div style="text-align: center; margin: 1.5rem 0;">
+                        $$\mathbf{x}_{k+1} = \mathbf{x}_k - \nabla^2 f(\mathbf{x}_k)^{-1} \nabla f(\mathbf{x}_k)$$
+                    </div>
+                    <p>
+                        and enjoys quadratic convergence in the neighborhood of the optimum, satisfying $e_{k+1} \le C e_k^2$. Our empirical results confirm this behavior. The first five Newton error ratios are $(0.6343, 0.4562, 0.2306, 0.0568, 0.0033)$, which decrease rapidly toward zero. This monotone decay demonstrates that the error contracts increasingly fast, exactly matching the definition of superlinear—indeed quadratic—convergence.
+                    </p>
+
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../blog-images/newton/02_convergence_superlinear.png" alt="Superlinear convergence test" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Superlinear convergence test for Newton's method.</p>
+                    </div>
+
+                    <h3>Early-Stage Behaviour of BFGS</h3>
+                    <p>
+                        To examine how BFGS accumulates curvature information in the early iterations, we compare its first three update directions with the Newton directions computed at the corresponding iterates. For BFGS, the search direction is simply the difference between successive iterates:
+                    </p>
+                    <div style="text-align: center; margin: 1.5rem 0;">
+                        $$\mathbf{d}^{\text{BFGS}}_k = \mathbf{w}_{k+1} - \mathbf{w}_k$$
+                    </div>
+                    <p>
+                        while the Newton direction is given by:
+                    </p>
+                    <div style="text-align: center; margin: 1.5rem 0;">
+                        $$\mathbf{s}^{\text{Newton}}_k = - \mathbf{H}_k^{-1} \nabla f(\mathbf{w}_k)$$
+                    </div>
+                    <p>
+                        The cosine similarities exceed $0.996$ in all three iterations, demonstrating that the early BFGS search directions are almost perfectly aligned with the corresponding Newton directions. This behaviour is consistent with the mechanism through which BFGS builds curvature information: even though the inverse Hessian approximation is initialised as the identity, the first few secant updates rapidly capture the local geometry of the logistic regression objective.
+                    </p>
+
+                    <h2>Part B: Nearly Collinear Data and Its Effect on Convergence</h2>
+
+                    <h3>Gradient Descent Behaviour Under Near-Collinearity</h3>
+                    <p>
+                        To examine how near-collinearity affects first-order optimisation, we perturb the second feature as:
+                    </p>
+                    <div style="text-align: center; margin: 1.5rem 0;">
+                        $$X_{\cdot,2} = X_{\cdot,1} + \varepsilon \xi, \qquad \xi \sim \mathcal{N}(0,1)$$
+                    </div>
+                    <p>
+                        with $\varepsilon \in \{0.1, 0.01, 0.001, 0.0001\}$. Smaller values of $\varepsilon$ induce stronger linear dependence, producing Hessians whose condition numbers range from approximately $10^2$ to nearly $10^9$.
+                    </p>
+
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../blog-images/newton/06_collinearity_gradient_descent_full.png" alt="Gradient descent under collinearity" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Gradient descent objective values (left) and gradient norms (right) under increasing levels of collinearity $\varepsilon$.</p>
+                    </div>
+
+                    <p>
+                        The figure shows that GD reaches the same objective value ($\approx 0.56$) for all $\varepsilon$, indicating that the statistical problem remains well-posed. However, the optimisation dynamics differ significantly across collinearity levels.
+                    </p>
+
+                    <h4>Conditioning Effects</h4>
+                    <p>
+                        The Hessian becomes increasingly ill-conditioned as $\varepsilon$ decreases: the condition number grows by nearly six orders of magnitude when moving from $\varepsilon=0.1$ to $\varepsilon=0.001$. This deterioration in curvature directly affects the behaviour of GD. At intermediate values such as $\varepsilon = 0.01$ and $0.001$, the smallest eigenvalue becomes extremely small while the largest remains unchanged, producing highly anisotropic curvature.
+                    </p>
+
+                    <h4>Convergence Speed</h4>
+                    <p>
+                        The effect of this poor conditioning is reflected clearly in the gradient norms. While the objective curves remain almost identical across all $\varepsilon$, the gradient norms exhibit a highly non-monotonic pattern:
+                    </p>
+                    <ul>
+                        <li>$\varepsilon = 0.1$: smooth and stable decay to $10^{-7}$</li>
+                        <li>$\varepsilon = 0.01$: an initial drop followed by a long plateau at $10^{-5}$--$10^{-6}$</li>
+                        <li>$\varepsilon = 0.001$: an even longer plateau with almost no reduction in gradient norm</li>
+                        <li>$\varepsilon = 0.0001$: rapid convergence within only $23$ iterations</li>
+                    </ul>
+                    <p>
+                        GD slows dramatically when $\varepsilon$ lies in the range $10^{-2}$--$10^{-3}$, requiring tens of thousands of iterations, but becomes fast again when $\varepsilon$ is extremely small. At $\varepsilon = 0.0001$, the Hessian nearly collapses into a rank-one structure, effectively reducing the optimisation problem to one dimension and allowing GD to move directly toward the minimiser.
+                    </p>
+
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../blog-images/newton/eps_contour.png" alt="Gradient descent trajectories under collinearity" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Gradient Descent trajectory under different collinearity strengths. Stronger collinearity produces increasingly elongated contours and severely distorted optimisation paths.</p>
+                    </div>
+
+                    <h3>Newton's Method Behaviour Under Near-Collinearity</h3>
+                    <p>
+                        We repeat the collinearity experiment for Newton's method using the perturbed feature construction. The following figure reports the objective and gradient-norm trajectories for $\varepsilon \in \{0.1, 0.01, 0.001, 0.0001\}$.
+                    </p>
+
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../blog-images/newton/06_collinearity_newton.png" alt="Newton method under collinearity" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Newton method objective values (left) and gradient norms (right) across collinearity levels $\varepsilon$.</p>
+                    </div>
+
+                    <p>
+                        As $\varepsilon$ decreases, the Hessian condition number increases from $10^2$ to nearly $10^9$, yet the algorithm still terminates in six iterations with almost unchanged accuracy. However, under strong collinearity, the early iterations (1--4) display clear signs of instability: slow decrease of the objective, small accepted step sizes, and a mismatch between gradient norm and objective improvement.
+                    </p>
+
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../blog-images/newton/eps_contour_newton.png" alt="Newton trajectories under collinearity" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Newton trajectories under increasing levels of collinearity. As $\varepsilon$ decreases, the Hessian becomes ill-conditioned, and the trajectory becomes elongated along the weak-curvature direction.</p>
+                    </div>
+
+                    <h4>Step Size Behaviour</h4>
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../blog-images/newton/newton_step_sizes.png" alt="Newton step sizes" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Newton step-size evolution across different collinearity levels.</p>
+                    </div>
+
+                    <p>
+                        For well-conditioned cases ($\varepsilon = 0.5$ and $0.1$), every Newton update is accepted with a full step ($t=1$), as expected for a well-scaled Hessian. However, once the design becomes nearly collinear ($\varepsilon \le 10^{-2}$), the Armijo line search begins to contract the step length in the early iterations. For $\varepsilon = 10^{-3}$ and $10^{-4}$, the step size shows a sharp drop, while the extreme case $\varepsilon = 10^{-5}$ exhibits a dramatic collapse: the step size oscillates and quickly falls to nearly zero.
+                    </p>
+
+                    <h3>Why Newton's Method Shows Vanishing Gradients but Nearly Constant Objective</h3>
+                    <p>
+                        Under near-collinearity, the Newton trajectories illustrate a striking contrast. In the non-collinear setting, the iterates follow a well-curved path toward the minimiser, whereas in the nearly-collinear case, the trajectory becomes almost a straight line extending across a shallow valley.
+                    </p>
+
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../blog-images/newton/06_Colllinearity.png" alt="Newton trajectories comparison" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Comparison of Newton trajectories on normal (left) and nearly-collinear (right, collinearity level $10^{-4}$) datasets.</p>
+                    </div>
+
+                    <p>
+                        This behaviour reflects the severe ill-conditioning of the Hessian: the objective value changes only marginally along the flat direction, while the gradient norm collapses rapidly due to strong curvature in the orthogonal direction. When the Hessian has a nearly-zero eigenvalue, $H^{-1}$ amplifies the component of the gradient along that eigenvector. The resulting update is large and moves almost entirely along a direction in which the loss surface is flat. Thus, $L(\mathbf{w}_{k+1}) - L(\mathbf{w}_k) \approx 0$, even when $\|\mathbf{s}_k\|$ is large.
+                    </p>
+
+                    <h3>Hessian Regularisation and Conditioning</h3>
+                    <p>
+                        To understand the behaviour of Newton's method on the nearly collinear dataset, we analyse the smallest eigenvalue of the Hessian both before and after adding a ridge regularisation term $\lambda I$.
+                    </p>
+
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../blog-images/newton/11_history_unreg.png" alt="Unregularised Newton" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Unregularised Newton on nearly collinear data (step norm, line search, gradient norm).</p>
+                    </div>
+
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../blog-images/newton/11_history_reg.png" alt="Regularised Newton" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Regularised Newton ($\lambda = 10^{-2}$) on nearly collinear data.</p>
+                    </div>
+
+                    <p>
+                        For logistic regression, the Hessian takes the form $H(\mathbf{w}) = X^\top S(\mathbf{w}) X$, where $S(\mathbf{w})$ contains the logistic variances. Near-collinearity in the design matrix causes $X^\top X$ to be nearly singular, and consequently $\lambda_{\min}(H)$ collapses to approximately $10^{-7}$. This yields a catastrophic condition number $\kappa(H) \approx 10^6$, which makes the Newton system $H\mathbf{s} = -\mathbf{g}$ extremely unstable.
+                    </p>
+                    <p>
+                        After adding ridge regularisation $\widetilde{H}(\mathbf{w}) = H(\mathbf{w}) + \lambda I$ with $\lambda = 10^{-2}$, the smallest eigenvalue is lifted to $\lambda_{\min}(\widetilde{H}) \approx 10^{-2}$, reducing the condition number by <strong>five orders of magnitude</strong>. Thus, the regularisation term stabilises the curvature matrix without significantly changing $\lambda_{\max}$.
+                    </p>
+
+                    <h2>Part C: Method-Specific Anomalies</h2>
+
+                    <h3>Gradient Descent Under Poor Curvature</h3>
+                    <p>
+                        Gradient Descent exhibits a pronounced <strong>long-tail plateau</strong> in the objective curve: after an initial decrease, the objective value remains nearly constant for several thousand iterations. The corresponding gradient norms fall below $10^{-6}$, indicating that the method continues to update the parameters, but only at an imperceptibly slow rate.
+                    </p>
+
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../blog-images/newton/10_anormalies_GD.png" alt="Gradient descent anomaly" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">Gradient Descent anomaly: long-tail plateau in the objective (left) and extremely small gradient norms (right).</p>
+                    </div>
+
+                    <p>
+                        The long plateau arises not from numerical issues or instability, but from the intrinsic behaviour of fixed-step GD near a minimiser: the diminishing gradient leads to vanishing step sizes, and therefore to extremely slow progress in both parameter space and objective value. In contrast to second-order methods, GD cannot automatically rescale its steps according to curvature, and hence remains inefficient once the iterates reach a region where the Hessian is small and nearly constant.
+                    </p>
+
+                    <h3>Anomalies for Newton's Method</h3>
+                    <p>
+                        In the well-conditioned regime, Newton's method behaves exactly as theory predicts. However, once collinearity is introduced, the stability of Newton's method deteriorates quickly. The most severe pathology occurs at $\varepsilon = 10^{-5}$, where the smallest eigenvalue of the Hessian collapses to $10^{-11}$--$10^{-12}$, while the largest eigenvalue remains on the order of $10^{-1}$. As a result, the condition number reaches the extreme range $\kappa(H_k) \approx 10^{10}$ throughout the iteration.
+                    </p>
+                    <p>
+                        Such an ill-conditioned Hessian severely distorts the Newton direction: the updates alternate between very large steps (e.g., $\|\mathbf{s}_0\| \approx 244$, $\|\mathbf{s}_1\| \approx 1280$) and extremely small steps ($\|\mathbf{s}_k\| \approx 10^{-6}$), depending on how the gradient aligns with the nearly singular eigenspace.
+                    </p>
+
+                    <h3>Anomalies for BFGS: Sudden Superlinear Convergence Transition</h3>
+                    <p>
+                        BFGS exhibits a distinctive anomaly: a <strong>sudden transition from a slow, almost linear regime to rapid superlinear convergence</strong>. The effect is visible in both the objective values and the gradient norms.
+                    </p>
+
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <img src="../blog-images/newton/10_anormalies_BFGS.png" alt="BFGS anomalies" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <p style="margin-top: 0.5rem; color: #666; font-size: 0.9rem;">BFGS convergence anomalies. The gradient norm exhibits a sudden superlinear collapse between iterations 13--15.</p>
+                    </div>
+
+                    <p>
+                        After an oscillatory phase, BFGS enters a noticeably different regime. Between iterations $k=11$ and $k=14$, the gradient norm collapses sharply, indicating the onset of superlinear convergence. The transition is non-smooth: the gradient norm decays slowly for $k \le 9$, then accelerates abruptly.
+                    </p>
+                    <p>
+                        The phenomenon is explained by the secant update that BFGS uses to approximate the Hessian. In early iterations, $y_k$ contains weak curvature information, making $B_k$ a poor Hessian approximation and yielding gradient-descent-like behaviour. Once the iterates move closer to the minimiser, $y_k$ captures richer curvature, causing $B_k$ to improve abruptly and produce near-Newton search directions. This sharp refinement triggers the observed superlinear collapse in the gradient norm.
+                    </p>
+
+                    <h2>Conclusion</h2>
+                    <p>
+                        Across all experiments conducted in this research, we compared the behaviour of Gradient Descent, Newton's Method, and BFGS in both well-conditioned and nearly collinear logistic regression settings. When the design matrix is well conditioned, all three algorithms recover decision boundaries that are nearly indistinguishable from the true separator, and they converge to parameter estimates whose geometric errors differ only marginally.
+                    </p>
+                    <p>
+                        The main differences arise not in solution quality but in optimisation efficiency: Newton's Method achieves the fastest convergence, followed by BFGS with its characteristic transition to superlinear convergence, while fixed-step Gradient Descent remains significantly slower due to its inability to incorporate curvature information.
+                    </p>
+                    <p>
+                        The behaviour diverges noticeably under near-collinearity. Gradient Descent suffers dramatic slowdowns precisely when the Hessian exhibits highly anisotropic curvature, with long plateaus in both the gradient norm and the objective value. In contrast, Newton's Method maintains rapid global convergence in iteration count, but its early iterations reveal clear signs of instability: distorted update directions, shrinking step sizes enforced by the line search, and a mismatch between decreasing gradient norms and almost constant objective values.
+                    </p>
+                    <p>
+                        Overall, the results highlight the decisive role of curvature and conditioning in shaping optimisation dynamics. While Newton's Method and BFGS exhibit strong performance even in challenging regimes, Gradient Descent remains sensitive to the geometry of the loss surface. The experiments underscore both the strengths and limitations of each method, and they illustrate how spectrum-driven effects such as ill-conditioning and near-null directions fundamentally influence the behaviour of second-order and quasi-Newton algorithms.
+                    </p>
+
+                    <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 1rem; margin: 1.5rem 0; border-radius: 4px;">
+                        <p style="margin: 0; font-size: 1.1rem; font-weight: 600;">
+                            <strong>⭐ Key Takeaways:</strong>
+                        </p>
+                        <ul style="margin: 0.5rem 0 0 0;">
+                            <li>All three methods recover similar decision boundaries, but differ significantly in convergence speed</li>
+                            <li>Newton's Method achieves quadratic convergence but is sensitive to ill-conditioning</li>
+                            <li>BFGS provides a good balance with superlinear convergence and better stability</li>
+                            <li>Gradient Descent is most affected by poor curvature and requires careful step size tuning</li>
+                            <li>Near-collinearity dramatically affects optimization dynamics, especially for first-order methods</li>
+                        </ul>
+                    </div>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="https://github.com/Yingurt001" target="_blank" title="GitHub"><img src="https://img.icons8.com/color/24/000000/github.png" alt="GitHub"></a>
+                <a href="https://orcid.org/0009-0000-2900-9197" target="_blank" title="ORCID"><img src="https://upload.wikimedia.org/wikipedia/commons/archive/f/f7/20160723044737%21Orcid_icon.png" alt="ORCID"></a>
+            </div>
+            <div class="footer-copyright">© Ying Zhang</div>
+        </div>
+    </footer>
+</body>
+</html>
+
